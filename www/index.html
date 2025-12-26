@@ -94,6 +94,10 @@ function validateAuthInput(email, password, isRegister = false) {
         showMessage('パスワードは6文字以上にしてください', 'error');
         return false;
     }
+    // if (!DisplayName || !DisplayName.trim() {
+// showMessage('ユーザーネームを入力してください', 'error');
+// return false;
+// }
     return true;
 }
 
@@ -109,18 +113,20 @@ function createPost(author, content) {
     const button = $('#postButton');
     button.prop('disabled', true);
 
-    // author はログインしているユーザのメールアドレスに変更、userId を追加
+    // author はログインしているユーザのメールアドレスに変更、userId を追加 ここをDisplayNameに変更？
     const postData = {
         author: currentUser.email,
         content: content,
         timestamp: firebase.database.ServerValue.TIMESTAMP,
         userId: currentUser.uid
+        //userId: currentUser.DisplayName//displayNameに変える？
     };
 
     postsRef.push(postData)
     .then(() => {
         showMessage('投稿が完了しました！');
         $('#contentInput').val('');
+        $('#contentCount').text('残り1000')
         updateCharacterCount('contentInput', 'contentCount', 1000);
     })
     .catch((error) => {
@@ -142,7 +148,7 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-// タイムスタンプのフォーマット
+// タイムスタンプのフォーマット　表示日時変えたい
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
     return date.toLocaleString('ja-JP', {
@@ -392,7 +398,7 @@ function animateUpdate(postId) {
 // ログイン処理
 function login(email, password) {
     if (!validateAuthInput(email, password)) return;
-
+//if (!validateAuthInput(email, password,DisplayName)) return;
     const button = $('#loginButton');
     button.prop('disabled', true);
 
@@ -415,7 +421,8 @@ function register(email, password) {
 
     const button = $('#registerButton');
     button.prop('disabled', true);
-
+//追加？
+//firebase.auth().createUserWithEmailAndPassword(email, password,displayName)
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(() => {
         showMessage('アカウントを作成しました');
@@ -453,6 +460,7 @@ function updateUI(user) {
         $('.logged-in').show();
         $('.logged-out').hide();
         $('#userEmail').text(user.email);
+        //$('#userEmail').text(user.DisplayName);
     } else {
         $('.logged-in').hide();
         $('.logged-out').show();
@@ -539,6 +547,12 @@ window.addEventListener('unload', () => {
                        class="form-control" placeholder="6文字以上">
                 <small class="help-text">※新規登録時は6文字以上</small>
             </div>
+            <!-- <div class="form-group">
+                <label for="loginDisplayName">ユーザーネーム</label>
+                <input type="DisplayName" id="loginDisplayName"
+                class="form-control" placeholder="UserName">
+                <small class="help-text">※ほかのユーザーにも表示されます</small>
+                </div> -->
             <div class="button-group">
                 <button id="loginButton" class="btn-primary">ログイン</button>
                 <button id="registerButton" class="btn-secondary">新規登録</button>
@@ -548,6 +562,7 @@ window.addEventListener('unload', () => {
         <!-- ログイン情報（ログイン時表示） -->
         <div class="user-info logged-in">
             <span>ログイン中：<span id="userEmail"></span></span>
+            <!-- <span>ログイン中：<span id="userDisplayName"></span></span> -->
             <button id="logoutButton" class="btn-secondary">ログアウト</button>
         </div>
 
@@ -557,7 +572,7 @@ window.addEventListener('unload', () => {
                 <label for="contentInput">投稿内容</label>
                 <textarea id="contentInput" class="form-control"
                           placeholder="投稿内容を入力してください"></textarea>
-                <small class="character-count" id="contentCount">1000</small>
+                <small class="character-count" id="contentCount">残り1000</small>
             </div>
             <div class="button-group">
                 <button id="postButton" class="btn-primary">投稿する</button>
