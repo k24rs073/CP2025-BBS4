@@ -221,6 +221,10 @@ function renderPosts(posts) {
 
     posts.forEach((post) => {
         postsDiv.append(createPostElement(post));
+
+        if(post.updatedAt){
+            $(`#post-${post.id}`).css("background-color", "rgb(255, 236, 247)");
+        }
     });
 }
 
