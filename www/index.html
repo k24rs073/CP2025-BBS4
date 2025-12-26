@@ -56,8 +56,8 @@ function updateCharacterCount(inputId, counterId, maxLength) {
     const counter = $(`#${counterId}`);
 
     input.on('input', () => {
-        const length = input.val().length;
-        counter.text(`${length}/${maxLength}`);
+        const length = 1000 - input.val().length;
+        counter.text(`残り${length}`);
 
         if (length > maxLength) {
             counter.addClass('error');
@@ -553,7 +553,7 @@ window.addEventListener('unload', () => {
                 <label for="contentInput">投稿内容</label>
                 <textarea id="contentInput" class="form-control"
                           placeholder="投稿内容を入力してください"></textarea>
-                <small class="character-count" id="contentCount">0/1000</small>
+                <small class="character-count" id="contentCount">1000</small>
             </div>
             <div class="button-group">
                 <button id="postButton" class="btn-primary">投稿する</button>
@@ -588,7 +588,7 @@ window.addEventListener('unload', () => {
             <div class="modal-body">
                 <div class="form-group">
                     <textarea id="editContent" class="form-control"></textarea>
-                    <small class="character-count" id="editContentCount">0/1000</small>
+                    <small class="character-count" id="editContentCount">1000</small>
                 </div>
             </div>
             <div class="modal-footer">
